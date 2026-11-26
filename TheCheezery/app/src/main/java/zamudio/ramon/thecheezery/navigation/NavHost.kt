@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import zamudio.ramon.thecheezery.view.screens.AddComboScreen
 import zamudio.ramon.thecheezery.view.screens.CarritoScreen
 import zamudio.ramon.thecheezery.view.screens.LoginScreen
 import zamudio.ramon.thecheezery.view.screens.MenuScreen
@@ -16,7 +17,7 @@ import zamudio.ramon.thecheezery.view.screens.ProductsScreen
 import zamudio.ramon.thecheezery.viewModel.CheezeryViewModel
 
 @Composable
-fun Myapp(innerPadding : PaddingValues,viewModel: CheezeryViewModel = viewModel()){
+fun Myapp(innerPadding: PaddingValues, viewModel: CheezeryViewModel = viewModel()) {
     val navController = rememberNavController()
     val navigateToLogin: () -> Unit = {
         navController.navigate(Login)
@@ -27,31 +28,54 @@ fun Myapp(innerPadding : PaddingValues,viewModel: CheezeryViewModel = viewModel(
     val navigateToCarrito: () -> Unit = {
         navController.navigate(Carrito)
     }
-    val viewModel: CheezeryViewModel = viewModel()
+    val navigateToAddCombo: () -> Unit = {
+        navController.navigate(AddCombo)
+    }
+
     val cartItems by viewModel.carrito.collectAsState()
     val currentTitle by viewModel.tituloCategoriaActual.collectAsState()
     val currentProducts by viewModel.productosActuales.collectAsState()
+    val allProducts by viewModel.todosLosProductos.collectAsState()
 
     NavHost(navController, startDestination = Principal) {
         composable<Principal> {
             PrincipalScreen(navigateToLogin)
         }
         composable<Menu> {
-            MenuScreen({ titulo, listaProductos ->
-                viewModel.establecerCategoria(titulo, listaProductos)
-                navController.navigate(Producto)
-            }, navigateToCarrito )
+            MenuScreen(
+                navigateToProducts = { titulo ->
+                    viewModel.establecerCategoria(titulo)
+                    navController.navigate(Producto)
+                },
+                navigateToCart = navigateToCarrito,
+                navigateToAddCombo = navigateToAddCombo
+            )
         }
         composable<Login> {
             LoginScreen(navigateToMenu)
         }
         composable<Producto> {
             ProductsScreen(
-                currentTitle, currentProducts, { product -> viewModel.agregarAlCarrito(product) }
+                title = currentTitle,
+                products = currentProducts,
+                onAgregarAlCarrito = { product -> viewModel.agregarAlCarrito(product) }
             )
         }
         composable<Carrito> {
-            CarritoScreen(cartItems, { product -> viewModel.eliminarDelCarrito(product) })
+            CarritoScreen(
+                cartItems = cartItems,
+                onRemoveItem = { product -> viewModel.eliminarDelCarrito(product) }
+            )
+        }
+        composable<AddCombo> {
+            AddComboScreen(
+                products = allProducts,
+                onSaveCombo = { name, price, productIds ->
+                    viewModel.crearCombo(name, price, productIds)
+                    navController.popBackStack()
+                },
+                onCancel = { navController.popBackStack() }
+            )
         }
     }
 }

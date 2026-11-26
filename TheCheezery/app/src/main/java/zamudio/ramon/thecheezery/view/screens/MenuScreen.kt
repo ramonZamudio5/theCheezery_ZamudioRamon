@@ -22,18 +22,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import zamudio.ramon.thecheezery.R
-import zamudio.ramon.thecheezery.model.domain.Product
-import zamudio.ramon.thecheezery.model.data.hotDrinks
-import zamudio.ramon.thecheezery.model.data.coldDrinks
-import zamudio.ramon.thecheezery.model.data.salties
-import zamudio.ramon.thecheezery.model.data.sweets
 import zamudio.ramon.thecheezery.ui.theme.Brighter_Pink
 import zamudio.ramon.thecheezery.ui.theme.Pinky
 
 @Composable
 fun MenuScreen(
-    navigateToProducts: (String, List<Product>) -> Unit = { _, _ -> },
-    navigateToCart: () -> Unit = {}
+    navigateToProducts: (String) -> Unit = {},
+    navigateToCart: () -> Unit = {},
+    navigateToAddCombo: () -> Unit = {}
 ) {
     Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
         Row(modifier = Modifier.fillMaxWidth().padding(16.dp), horizontalArrangement = Arrangement.End) {
@@ -73,17 +69,17 @@ fun MenuScreen(
                 Text(
                     text = "Hot drinks",
                     color = Color.White,
-                    modifier = Modifier.clickable { navigateToProducts("Hot Drinks", hotDrinks) }.padding(8.dp)
+                    modifier = Modifier.clickable { navigateToProducts("Hot Drinks") }.padding(8.dp)
                 )
                 Text(
                     text = "Salties",
                     color = Color.White,
-                    modifier = Modifier.clickable { navigateToProducts("Salties", salties) }.padding(8.dp)
+                    modifier = Modifier.clickable { navigateToProducts("Salties") }.padding(8.dp)
                 )
                 Text(
                     text = "Combos",
                     color = Color.White,
-                    modifier = Modifier.clickable {  }.padding(8.dp)
+                    modifier = Modifier.clickable { navigateToAddCombo() }.padding(8.dp)
                 )
             }
             Column(
@@ -101,12 +97,12 @@ fun MenuScreen(
                 Text(
                     text = "Cold drinks",
                     color = Color.White,
-                    modifier = Modifier.clickable { navigateToProducts("Cold Drinks", coldDrinks) }.padding(8.dp)
+                    modifier = Modifier.clickable { navigateToProducts("Cold Drinks") }.padding(8.dp)
                 )
                 Text(
                     text = "Sweets",
                     color = Color.White,
-                    modifier = Modifier.clickable { navigateToProducts("Sweets", sweets) }.padding(8.dp)
+                    modifier = Modifier.clickable { navigateToProducts("Sweets") }.padding(8.dp)
                 )
                 Text(
                     text = "Add new product",
