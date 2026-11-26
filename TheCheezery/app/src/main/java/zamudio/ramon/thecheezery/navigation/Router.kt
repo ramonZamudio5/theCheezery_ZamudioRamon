@@ -16,6 +16,3 @@ object Producto
 
 @Serializable
 object Carrito
-
-@Serializable
-object AddCombo
